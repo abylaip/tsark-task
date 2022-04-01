@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@components/Navbar";
 import SiteContaier from "../components/SiteContainer";
 import { getToken, JWT } from "next-auth/jwt";
+import { useRouter } from "next/router";
 
 export default function Home({ token }: { token: JWT }) {
+  const router = useRouter();
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
   return (
     <div className="bg-slate-50 min-h-screen">
       <Navbar />
