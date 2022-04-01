@@ -3,7 +3,7 @@ import DropDownButton from "./DropDownButton";
 
 const Navbar = () => {
   return (
-    <div className="flex justify-end items-center space-x-5 w-full shadow-lg py-4 px-10">
+    <div className="sticky top-0 z-50 bg-white flex justify-end items-center space-x-5 w-full shadow-lg py-4 px-10">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="h-6 w-6"
