@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const DropDownButton = () => {
   const [showList, setShowList] = useState(false);
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<any>(null);
   useEffect(() => {
-    function handleClickOutside(event) {
+    function handleClickOutside(event: any) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setShowList(false);
       }
