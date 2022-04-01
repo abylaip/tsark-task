@@ -1,7 +1,25 @@
-import React from "react";
-import { Formik } from "formik";
+import React, { useEffect } from "react";
+import { Formik, Form } from "formik";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import * as Yup from "yup";
+
+interface FormValues {
+  email: string;
+  password: string;
+}
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string().required("Required"),
+});
 
 const LoginPage = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/login");
+  }, []);
+  const initialValues: FormValues = { email: "", password: "" };
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center space-y-2">
       <div className="block text-4xl uppercase text-purple-600 font-extrabold">
@@ -11,39 +29,29 @@ const LoginPage = () => {
       </div>
       <div className="p-5 lg:p-10 rounded-xl shadow-2xl shadow-violet-300 w-11/12 lg:w-4/12">
         <Formik
-          initialValues={{ email: "", password: "" }}
-          validate={(values) => {
-            const errors = { email: "", password: "" };
-            if (!values.email) {
-              errors.email = "* Required";
-            } else if (
-              !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-            ) {
-              errors.email = "* Invalid email address";
+          initialValues={initialValues}
+          validationSchema={LoginSchema}
+          onSubmit={async ({ email, password }) => {
+            try {
+              await signIn("credentials", {
+                email,
+                password,
+                callbackUrl: `${window.location.origin}`,
+              });
+            } catch (e) {
+              alert(e);
             }
-            if (!values.password) {
-              errors.password = "* Required";
-            }
-            return errors;
-          }}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
           }}
         >
           {({
             values,
-            errors,
-            touched,
             handleChange,
             handleBlur,
+            touched,
             handleSubmit,
-            isSubmitting,
-            /* and other goodies */
+            errors,
           }) => (
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <Form className="space-y-4">
               <section className="flex justify-center">
                 <h1 className="text-4xl font-extrabold text-slate-800">
                   Вход в Tsarka
@@ -63,7 +71,7 @@ const LoginPage = () => {
                   onBlur={handleBlur}
                   value={values.email}
                   className="w-full p-3 rounded-lg bg-purple-50 outline-none border border-white focus:border-purple-600 focus:bg-white"
-                  placeholder="username@example.com"
+                  placeholder="email@example.com"
                 />
               </section>
               <section className="space-y-2">
@@ -85,13 +93,16 @@ const LoginPage = () => {
               <section>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full p-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-lg"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSubmit();
+                  }}
+                  className="w-full p-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-lg outline-none"
                 >
                   Sign in
                 </button>
               </section>
-            </form>
+            </Form>
           )}
         </Formik>
       </div>

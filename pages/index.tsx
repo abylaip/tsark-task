@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@components/Navbar";
 import SiteContaier from "../components/SiteContainer";
+import { getToken, JWT } from "next-auth/jwt";
 
-export default function Home() {
+export default function Home({ token }: { token: JWT }) {
+  useEffect(() => {
+    console.log(token);
+  }, []);
   return (
     <div className="bg-slate-50 min-h-screen">
       <Navbar />
@@ -34,4 +38,12 @@ export default function Home() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const secret = process.env.NEXTAUTH_SECRET;
+  const token = await getToken({ req, secret });
+  return {
+    props: { token: token?.accessToken },
+  };
 }
