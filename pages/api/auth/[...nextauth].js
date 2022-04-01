@@ -8,7 +8,7 @@ const providers = [
     name: "Credentials",
     credentials: {
       email: {
-        label: "email@example.com",
+        label: "email",
         type: "text",
       },
       password: {
@@ -19,23 +19,19 @@ const providers = [
     async authorize(credentials) {
       const email = credentials?.email;
       const password = credentials?.password;
-      try {
-        const users = await client.mutate({
-          mutation: LOGIN,
-          variables: {
-            email,
-            password,
-          },
-        });
-        const user = users.login;
-        if (user) {
-          return user;
-        } else {
-          return null;
-        }
-      } catch (error) {
-        return null;
+      const users = await client.mutate({
+        mutation: LOGIN,
+        variables: {
+          email,
+          password,
+        },
+      });
+      const user = users.data.users.login;
+      if (user) {
+        return user;
       }
+
+      return null;
     },
     session: {
       strategy: "jwt",
@@ -61,6 +57,7 @@ const callbacks = {
 
 const pages = {
   signIn: "/login",
+  error: "/login",
 };
 
 const options = {

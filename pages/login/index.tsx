@@ -16,9 +16,12 @@ const LoginSchema = Yup.object().shape({
 
 const LoginPage = () => {
   const router = useRouter();
+  const { error } = router.query;
   useEffect(() => {
-    router.push("/login");
-  }, []);
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
   const initialValues: FormValues = { email: "", password: "" };
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center space-y-2">
@@ -32,26 +35,28 @@ const LoginPage = () => {
           initialValues={initialValues}
           validationSchema={LoginSchema}
           onSubmit={async ({ email, password }) => {
-            try {
-              await signIn("credentials", {
-                email,
-                password,
-                callbackUrl: `${window.location.origin}`,
-              });
-            } catch (e) {
-              alert(e);
-            }
+            await signIn("credentials", {
+              email,
+              password,
+              callbackUrl: `${window.location.origin}`,
+            });
           }}
         >
           {({
             values,
             handleChange,
             handleBlur,
-            touched,
             handleSubmit,
+            touched,
             errors,
           }) => (
-            <Form className="space-y-4">
+            <Form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit(e);
+              }}
+            >
               <section className="flex justify-center">
                 <h1 className="text-4xl font-extrabold text-slate-800">
                   Вход в Tsarka
@@ -93,10 +98,6 @@ const LoginPage = () => {
               <section>
                 <button
                   type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                  }}
                   className="w-full p-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-lg outline-none"
                 >
                   Sign in
