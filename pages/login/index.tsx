@@ -1,6 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "graphql/mutations";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginUser, loading] = useMutation(LOGIN, {
+    variables: {
+      email: email,
+      password: password,
+    },
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (data) => {
+      alert(data);
+    },
+  });
+
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center space-y-2">
       <div className="block text-4xl uppercase text-purple-600 font-extrabold">
@@ -20,6 +37,8 @@ const LoginPage = () => {
             type="email"
             className="w-full p-3 rounded-lg bg-purple-50 outline-none border border-white focus:border-purple-600 focus:bg-white"
             placeholder="username@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </section>
         <section className="space-y-2">
@@ -27,10 +46,15 @@ const LoginPage = () => {
           <input
             type="password"
             className="w-full p-3 rounded-lg bg-purple-50 outline-none border border-white focus:border-purple-600 focus:bg-white"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </section>
         <section>
-          <button className="w-full p-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-lg">
+          <button
+            onClick={() => loginUser()}
+            className="w-full p-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-lg"
+          >
             Sign in
           </button>
         </section>
