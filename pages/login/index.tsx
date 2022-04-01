@@ -8,7 +8,7 @@ const LoginPage = () => {
         <p>Frontend</p>
         <p>Task</p>
       </div>
-      <div className="p-10 rounded-xl shadow-2xl shadow-violet-300 w-4/12 space-y-4">
+      <div className="p-5 lg:p-10 rounded-xl shadow-2xl shadow-violet-300 w-11/12 lg:w-4/12 space-y-4">
         <section className="flex justify-center">
           <h1 className="text-4xl font-extrabold text-slate-800">
             Вход в Tsarka
