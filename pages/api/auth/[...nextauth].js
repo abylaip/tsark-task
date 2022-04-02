@@ -45,7 +45,6 @@ const callbacks = {
     if (user) {
       token.accessToken = user.token.accessToken;
     }
-
     return token;
   },
 
@@ -66,7 +65,5 @@ const options = {
   pages,
   secret: process.env.NEXT_AUTH_SECRET,
 };
-
-// add refresh token
 
 export default (req, res) => NextAuth(req, res, options);
